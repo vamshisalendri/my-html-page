@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bujji 💖 Valentine</title>
+
+<style>
+*{box-sizing:border-box;font-family:"Segoe UI",sans-serif}
+
+body{
+  margin:0;height:100vh;overflow:hidden;
+  background:radial-gradient(circle at top,#0f2027,#203a43,#2c5364);
+  display:flex;justify-content:center;align-items:center;color:white
+}
+
+/* STARS */
+.star{
+  position:fixed;width:2px;height:2px;
+  background:white;border-radius:50%;
+  animation:twinkle 3s infinite
+}
+@keyframes twinkle{50%{opacity:.3}}
+
+/* HEARTS */
+.heart{
+  position:fixed;bottom:-20px;font-size:22px;
+  animation:floatUp 6s linear forwards;
+  pointer-events:none
+}
+@keyframes floatUp{
+  to{transform:translateY(-110vh) scale(1.4);opacity:0}
+}
+
+/* CARD */
+.card{
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(18px);
+  padding:50px 60px;border-radius:30px;
+  text-align:center;
+  box-shadow:0 30px 70px rgba(0,0,0,.4);
+  z-index:5;
+  overflow:visible;
+}
+
+/* BUJJI GLOW */
+.bujji{
+  font-size:34px;
+  color:#ff9ecd;
+  text-shadow:0 0 15px #ff4d9d,0 0 30px #ff4d9d;
+  animation:glow 1.5s infinite alternate
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px #ff4d9d}
+  to{text-shadow:0 0 30px #ff99cc}
+}
+
+h2{margin-bottom:30px}
+
+/* BUTTONS */
+button{
+  font-size:20px;padding:14px 40px;
+  border:none;border-radius:50px;
+  cursor:pointer;margin:10px 20px;
+  transition:transform .25s ease,font-size .25s ease;
+}
+
+#yes{background:#28ff9e}
+
+#no{
+  background:#ff4d6d;
+  color:white;
+  position:relative;
+  white-space:nowrap;
+  max-width:none;
+}
+
+/* BOOM */
+.boom{animation:boom .4s}
+@keyframes boom{50%{transform:scale(1.6)}}
+
+/* POPUP */
+.popup{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;justify-content:center;align-items:center;
+  z-index:20
+}
+.popup-box{
+  background:linear-gradient(135deg,#fff0f6,#ffe3ec);
+  color:#d6336c;padding:40px 50px;
+  border-radius:25px;text-align:center;
+  position:relative;animation:pop .5s
+}
+@keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
+
+.close{
+  position:absolute;top:8px;right:10px;
+  background:#ff4d6d;color:white;border:none;
+  width:26px;height:26px;border-radius:50%;
+  cursor:pointer;font-size:16px
+}
+
+/* GIF */
+.romantic-gif{
+  width:240px;
+  border-radius:18px;
+  margin:15px 0 20px;
+  box-shadow:0 10px 30px rgba(214,51,108,.4);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  50%{transform:scale(1.03)}
+}
+
+/* CONFETTI */
+.confetti{
+  position:fixed;width:8px;height:8px;
+  animation:fall 3s linear forwards
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* SHAKE */
+.shake{animation:shake .3s}
+@keyframes shake{
+  20%{transform:translateX(-10px)}
+  40%{transform:translateX(10px)}
+  60%{transform:translateX(-6px)}
+  80%{transform:translateX(6px)}
+}
+
+/* FIREWORK CANVAS */
+canvas{position:fixed;inset:0;pointer-events:none;z-index:10}
+
+.hint{position:fixed;bottom:15px;font-size:14px;opacity:.8}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+  <div class="bujji">Bujji 💖</div>
+  <h2>Will you be my Valentine forever?</h2>
+  <button id="yes">Yes 💍</button>
+  <button id="no">No 😜</button>
+</div>
+
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <button class="close" id="close">×</button>
+
+    <!-- HUGGING + FLOATING HEARTS GIF -->
+    <img
+      src="https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif"
+      class="romantic-gif"
+      alt="Couple Hugging with Hearts"
+    >
+
+    <h2>Yaaay Bujji 💕</h2>
+    <p><b>This is the best decision you have ever taken 💖</b></p>
+  </div>
+</div>
+
+<div class="hint">Click anywhere once, then hover YES 💖</div>
+
+<canvas id="fx"></canvas>
+<audio id="song" src="song.mp3"></audio>
+
+<script>
+const yes=document.getElementById("yes"),
+no=document.getElementById("no"),
+popup=document.getElementById("popup"),
+close=document.getElementById("close"),
+song=document.getElementById("song"),
+canvas=document.getElementById("fx"),
+ctx=canvas.getContext("2d"),
+card=document.getElementById("card");
+
+canvas.width=innerWidth;canvas.height=innerHeight;
+let unlocked=false,active=false,particles=[];
+
+/* STARS */
+for(let i=0;i<120;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  document.body.appendChild(s);
+}
+
+/* AUDIO UNLOCK */
+document.addEventListener("click",()=>{
+  if(!unlocked){
+    song.play().then(()=>{
+      song.pause();song.currentTime=0;unlocked=true;
+      document.querySelector(".hint").style.display="none";
+    });
+  }
+},{once:true});
+
+/* HEARTS */
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="heart";h.innerHTML="💖";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},600);
+
+/* CONFETTI */
+function confetti(){
+  for(let i=0;i<30;i++){
+    let c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360},100%,60%)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+/* FIREWORKS */
+function fire(x,y){
+  for(let i=0;i<40;i++){
+    particles.push({
+      x,y,
+      vx:(Math.random()-.5)*6,
+      vy:(Math.random()-.5)*6,
+      life:60,
+      color:`hsl(${Math.random()*360},100%,60%)`
+    });
+  }
+}
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i)=>{
+    p.x+=p.vx;p.y+=p.vy;p.life--;
+    ctx.fillStyle=p.color;
+    ctx.fillRect(p.x,p.y,3,3);
+    if(p.life<=0)particles.splice(i,1);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* YES */
+yes.addEventListener("mouseenter",()=>{
+  if(!unlocked||active)return;
+  active=true;
+
+  popup.style.display="flex";
+  yes.classList.add("boom");
+  card.classList.add("shake");
+
+  setTimeout(()=>{
+    yes.classList.remove("boom");
+    card.classList.remove("shake");
+  },400);
+
+  song.currentTime=0;
+  song.volume=.7;
+  song.play();
+
+  fire(innerWidth/2,innerHeight/2);
+  confetti();
+});
+
+/* NO TEXTS */
+const noTexts=[
+  "Please no 🥺",
+  "Touched by mistake 😅",
+  "No… sorry 💔",
+  "Wait 😭",
+  "Are you sure? 😢",
+  "You can’t escape love 💘"
+];
+let noIndex=0;
+
+/* FONT AUTO RESIZE */
+function adjustNoFont(){
+  const len=no.textContent.length;
+  if(len>18) no.style.fontSize="14px";
+  else if(len>12) no.style.fontSize="16px";
+  else no.style.fontSize="20px";
+}
+
+/* NO ESCAPE */
+no.addEventListener("mouseenter",()=>{
+  no.style.transform=`translate(${Math.random()*220-110}px,${Math.random()*180-90}px)`;
+  no.textContent=noTexts[noIndex];
+  noIndex=(noIndex+1)%noTexts.length;
+  adjustNoFont();
+});
+
+/* CLOSE */
+close.onclick=()=>{
+  popup.style.display="none";
+  song.pause();song.currentTime=0;
+  setTimeout(()=>active=false,300);
+};
+</script>
+
+</body>
+</html>
