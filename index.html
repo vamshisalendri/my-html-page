@@ -7,103 +7,137 @@
 <style>
 *{box-sizing:border-box;font-family:"Segoe UI",sans-serif}
 
+/* 🌌 DARK BACKGROUND */
 body{
   margin:0;height:100vh;overflow:hidden;
-  background:radial-gradient(circle at top,#0f2027,#203a43,#2c5364);
-  display:flex;justify-content:center;align-items:center;color:white
+  display:flex;justify-content:center;align-items:center;
+  background:#050505;
+  color:white;
 }
 
-/* STARS */
-.star{
-  position:fixed;width:2px;height:2px;
-  background:white;border-radius:50%;
-  animation:twinkle 3s infinite
-}
-@keyframes twinkle{50%{opacity:.3}}
-
-/* HEARTS */
+/* 💖 FLOATING HEARTS */
 .heart{
-  position:fixed;bottom:-20px;font-size:22px;
-  animation:floatUp 6s linear forwards;
-  pointer-events:none
+  position:fixed;bottom:-20px;
+  font-size:22px;opacity:.7;
+  animation:floatUp 8s linear forwards;
+  pointer-events:none;
 }
 @keyframes floatUp{
-  to{transform:translateY(-110vh) scale(1.4);opacity:0}
+  to{transform:translateY(-120vh) scale(1.5);opacity:0}
 }
 
-/* CARD */
+/* 🌹 ROSE FLAKES */
+.rose{
+  position:fixed;
+  top:-40px;
+  font-size:28px;
+  opacity:.6;
+  animation:fallRose 12s linear forwards;
+  pointer-events:none;
+}
+@keyframes fallRose{
+  to{
+    transform:translateY(120vh) rotate(360deg);
+    opacity:0;
+  }
+}
+
+/* ✨ SPARKLES */
+.sparkle{
+  position:fixed;
+  width:4px;height:4px;
+  background:white;
+  border-radius:50%;
+  opacity:.8;
+  box-shadow:0 0 12px white;
+  animation:sparkleFall 6s linear forwards;
+}
+@keyframes sparkleFall{
+  to{
+    transform:translateY(120vh);
+    opacity:0;
+  }
+}
+
+/* 💎 GLASS CARD */
 .card{
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(18px);
-  padding:50px 60px;border-radius:30px;
+  padding:55px 65px;
+  border-radius:36px;
   text-align:center;
-  box-shadow:0 30px 70px rgba(0,0,0,.4);
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:
+    0 35px 80px rgba(0,0,0,.8),
+    inset 0 0 30px rgba(255,255,255,.05);
   z-index:5;
 }
 
-/* BUJJI */
+/* 💖 TITLE */
 .bujji{
-  font-size:34px;
-  color:#ff9ecd;
-  text-shadow:0 0 15px #ff4d9d,0 0 30px #ff4d9d;
-  animation:glow 1.5s infinite alternate
-}
-@keyframes glow{
-  from{text-shadow:0 0 10px #ff4d9d}
-  to{text-shadow:0 0 30px #ff99cc}
+  font-size:38px;font-weight:700;
+  color:#ffb3d9;
+  text-shadow:0 0 20px #ff4d9d;
+  margin-bottom:14px;
 }
 
-h2{margin-bottom:30px}
+/* 💌 QUESTION */
+.question{
+  font-size:30px;font-weight:700;
+  margin:26px 0 40px;
+  color:#fff;
+  text-shadow:0 0 12px #ff7abf,0 0 28px #ff4d9d;
+}
 
-/* BUTTONS */
+/* 🔘 BUTTONS */
 button{
-  font-size:20px;padding:14px 40px;
+  font-size:20px;padding:14px 42px;
   border:none;border-radius:50px;
-  cursor:pointer;margin:10px 20px;
-  transition:.25s
+  cursor:pointer;margin:10px 22px;
 }
-#yes{background:#28ff9e}
-#no{background:#ff4d6d;color:white;position:relative}
 
-/* POPUP */
+#yes{
+  background:#28ff9e;
+  box-shadow:0 0 22px rgba(40,255,158,.6);
+}
+
+#no{
+  background:#ff4d6d;
+  color:white;
+  position:relative;
+}
+
+/* 🎁 POPUP */
 .popup{
   position:fixed;inset:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.7);
   display:none;justify-content:center;align-items:center;
-  z-index:20
+  z-index:20;
 }
 .popup-box{
   background:linear-gradient(135deg,#fff0f6,#ffe3ec);
   color:#d6336c;
   padding:40px 50px;
-  border-radius:25px;
+  border-radius:28px;
   text-align:center;
-  position:relative;
-  animation:pop .5s
+  animation:pop .5s;
 }
-@keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
+@keyframes pop{from{transform:scale(.6)}to{transform:scale(1)}}
 
 .close{
-  position:absolute;top:8px;right:10px;
+  position:absolute;top:10px;right:14px;
   background:#ff4d6d;color:white;border:none;
   width:26px;height:26px;border-radius:50%;
-  cursor:pointer
+  cursor:pointer;
 }
 
 .romantic-gif{
-  width:240px;
-  border-radius:18px;
-  margin:15px 0 20px;
-  box-shadow:0 10px 30px rgba(214,51,108,.4);
+  width:240px;border-radius:18px;
+  margin:18px 0;
+  box-shadow:0 12px 35px rgba(214,51,108,.45);
 }
 
-/* CONFETTI */
-.confetti{
-  position:fixed;width:8px;height:8px;
-  animation:fall 3s linear forwards
-}
-@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
-
+/* 🎆 FIREWORKS */
 canvas{position:fixed;inset:0;pointer-events:none;z-index:10}
 </style>
 </head>
@@ -111,8 +145,8 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:10}
 <body>
 
 <div class="card">
-  <div class="bujji">Bujji 💖</div>
-  <h2>Will you be my Valentine forever?</h2>
+  <div class="bujji">BUJJI 💖</div>
+  <div class="question">Will you be my Valentine forever?</div>
   <button id="yes">Yes 💍</button>
   <button id="no">No 😜</button>
 </div>
@@ -120,15 +154,9 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:10}
 <div class="popup" id="popup">
   <div class="popup-box">
     <button class="close" id="close">×</button>
-
-    <img
-      src="https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif"
-      class="romantic-gif"
-      alt="Couple Hugging"
-    >
-
+    <img src="https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif" class="romantic-gif">
     <h2>Yaaay Bujji 💕</h2>
-    <p><b>This is the best decision you have ever taken 💖</b></p>
+    <p><b>This is the best decision you have ever taken 💕</b></p>
   </div>
 </div>
 
@@ -136,48 +164,41 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:10}
 <audio id="song" src="song.mp3"></audio>
 
 <script>
-const yes=document.getElementById("yes");
-const no=document.getElementById("no");
-const popup=document.getElementById("popup");
-const close=document.getElementById("close");
-const song=document.getElementById("song");
-
-const canvas=document.getElementById("fx");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-
-let particles=[];
-let unlocked=false;
-
-/* AUDIO UNLOCK */
-document.body.addEventListener("click",()=>{
-  if(!unlocked){
-    song.play().then(()=>{
-      song.pause();song.currentTime=0;unlocked=true;
-    });
-  }
-},{once:true});
-
-/* STARS */
-for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"vw";
-  s.style.top=Math.random()*100+"vh";
-  document.body.appendChild(s);
-}
-
-/* HEARTS */
+/* 💖 HEARTS */
 setInterval(()=>{
-  let h=document.createElement("div");
-  h.className="heart";h.innerHTML="💖";
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
   h.style.left=Math.random()*100+"vw";
   document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},600);
+  setTimeout(()=>h.remove(),8000);
+},500);
 
-/* FIREWORKS */
+/* 🌹 ROSE FLAKES */
+setInterval(()=>{
+  const r=document.createElement("div");
+  r.className="rose";
+  r.innerHTML="🌹";
+  r.style.left=Math.random()*100+"vw";
+  document.body.appendChild(r);
+  setTimeout(()=>r.remove(),12000);
+},700);
+
+/* ✨ SPARKLES */
+setInterval(()=>{
+  const s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=Math.random()*100+"vw";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),6000);
+},300);
+
+/* 🎆 FIREWORKS */
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;canvas.height=innerHeight;
+let particles=[];
+
 function fire(x,y){
   for(let i=0;i<40;i++){
     particles.push({
@@ -201,44 +222,33 @@ function animate(){
 }
 animate();
 
-/* CURSOR FIREWORKS */
-document.addEventListener("mousemove",(e)=>{
-  if(Math.random()<0.05){
-    fire(e.clientX,e.clientY);
-  }
-});
+/* BUTTON LOGIC */
+const yes=document.getElementById("yes");
+const no=document.getElementById("no");
+const popup=document.getElementById("popup");
+const close=document.getElementById("close");
+const song=document.getElementById("song");
 
-/* YES CLICK */
 yes.onclick=()=>{
   popup.style.display="flex";
   song.currentTime=0;
-  song.volume=.7;
   song.play();
-
-  for(let i=0;i<4;i++){
-    setTimeout(()=>{
-      fire(innerWidth/2,innerHeight/2);
-    },i*200);
-  }
+  fire(innerWidth/2,innerHeight/2);
 };
 
-/* NO BUTTON TEXT + ESCAPE */
-const noTexts=[
+const texts=[
   "No please 🥺",
   "No Bujji 😭",
   "Don’t break me 💔",
   "Wait 😢",
-  "You love me 😜",
-  "Nice try 😏"
+  "Love me 😜"
 ];
-let idx=0;
-
+let i=0;
 no.addEventListener("mouseenter",()=>{
-  no.textContent=noTexts[idx++%noTexts.length];
-  no.style.transform=`translate(${Math.random()*220-110}px,${Math.random()*180-90}px)`;
+  no.textContent=texts[i++%texts.length];
+  no.style.transform=`translate(${Math.random()*200-100}px,${Math.random()*160-80}px)`;
 });
 
-/* CLOSE */
 close.onclick=()=>{
   popup.style.display="none";
   song.pause();
