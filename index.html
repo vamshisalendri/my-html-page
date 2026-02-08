@@ -6,6 +6,7 @@
 
 <style>
 *{box-sizing:border-box;font-family:"Segoe UI",sans-serif}
+
 body{
   margin:0;height:100vh;overflow:hidden;
   background:radial-gradient(circle at top,#0f2027,#203a43,#2c5364);
@@ -73,11 +74,14 @@ button{
 }
 .popup-box{
   background:linear-gradient(135deg,#fff0f6,#ffe3ec);
-  color:#d6336c;padding:40px 50px;
-  border-radius:25px;text-align:center;
-  animation:pop .4s
+  color:#d6336c;
+  padding:40px 50px;
+  border-radius:25px;
+  text-align:center;
+  position:relative;
+  animation:pop .5s
 }
-@keyframes pop{from{transform:scale(.6)}to{transform:scale(1)}}
+@keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
 
 .close{
   position:absolute;top:8px;right:10px;
@@ -86,9 +90,9 @@ button{
   cursor:pointer
 }
 
-/* GIF */
 .romantic-gif{
-  width:240px;border-radius:18px;
+  width:240px;
+  border-radius:18px;
   margin:15px 0 20px;
   box-shadow:0 10px 30px rgba(214,51,108,.4);
 }
@@ -99,6 +103,8 @@ button{
   animation:fall 3s linear forwards
 }
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+canvas{position:fixed;inset:0;pointer-events:none;z-index:10}
 </style>
 </head>
 
@@ -114,12 +120,19 @@ button{
 <div class="popup" id="popup">
   <div class="popup-box">
     <button class="close" id="close">×</button>
-    <img src="https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif" class="romantic-gif">
+
+    <img
+      src="https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif"
+      class="romantic-gif"
+      alt="Couple Hugging"
+    >
+
     <h2>Yaaay Bujji 💕</h2>
     <p><b>This is the best decision you have ever taken 💖</b></p>
   </div>
 </div>
 
+<canvas id="fx"></canvas>
 <audio id="song" src="song.mp3"></audio>
 
 <script>
@@ -128,6 +141,23 @@ const no=document.getElementById("no");
 const popup=document.getElementById("popup");
 const close=document.getElementById("close");
 const song=document.getElementById("song");
+
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let particles=[];
+let unlocked=false;
+
+/* AUDIO UNLOCK */
+document.body.addEventListener("click",()=>{
+  if(!unlocked){
+    song.play().then(()=>{
+      song.pause();song.currentTime=0;unlocked=true;
+    });
+  }
+},{once:true});
 
 /* STARS */
 for(let i=0;i<120;i++){
@@ -147,31 +177,66 @@ setInterval(()=>{
   setTimeout(()=>h.remove(),6000);
 },600);
 
-/* CONFETTI */
-function confetti(){
-  for(let i=0;i<30;i++){
-    let c=document.createElement("div");
-    c.className="confetti";
-    c.style.left=Math.random()*100+"vw";
-    c.style.background=`hsl(${Math.random()*360},100%,60%)`;
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
+/* FIREWORKS */
+function fire(x,y){
+  for(let i=0;i<40;i++){
+    particles.push({
+      x,y,
+      vx:(Math.random()-.5)*6,
+      vy:(Math.random()-.5)*6,
+      life:60,
+      color:`hsl(${Math.random()*360},100%,60%)`
+    });
   }
 }
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i)=>{
+    p.x+=p.vx;p.y+=p.vy;p.life--;
+    ctx.fillStyle=p.color;
+    ctx.fillRect(p.x,p.y,3,3);
+    if(p.life<=0)particles.splice(i,1);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
 
-/* YES CLICK — MUSIC WORKS */
+/* CURSOR FIREWORKS */
+document.addEventListener("mousemove",(e)=>{
+  if(Math.random()<0.05){
+    fire(e.clientX,e.clientY);
+  }
+});
+
+/* YES CLICK */
 yes.onclick=()=>{
   popup.style.display="flex";
   song.currentTime=0;
-  song.volume=0.7;
+  song.volume=.7;
   song.play();
-  confetti();
+
+  for(let i=0;i<4;i++){
+    setTimeout(()=>{
+      fire(innerWidth/2,innerHeight/2);
+    },i*200);
+  }
 };
 
-/* NO ESCAPE */
-no.onmouseenter=()=>{
-  no.style.transform=`translate(${Math.random()*200-100}px,${Math.random()*160-80}px)`;
-};
+/* NO BUTTON TEXT + ESCAPE */
+const noTexts=[
+  "No please 🥺",
+  "No Bujji 😭",
+  "Don’t break me 💔",
+  "Wait 😢",
+  "You love me 😜",
+  "Nice try 😏"
+];
+let idx=0;
+
+no.addEventListener("mouseenter",()=>{
+  no.textContent=noTexts[idx++%noTexts.length];
+  no.style.transform=`translate(${Math.random()*220-110}px,${Math.random()*180-90}px)`;
+});
 
 /* CLOSE */
 close.onclick=()=>{
